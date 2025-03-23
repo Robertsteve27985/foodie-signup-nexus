@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -16,12 +15,12 @@ import {
   PhoneCall,
   User
 } from "lucide-react";
+import Utensils from "@/components/utensils-icon";
 
-// Sample order data
 const ORDER = {
   id: "ORD-12345",
   date: new Date().toISOString(),
-  status: "preparing", // Possible values: "placed", "preparing", "delivering", "delivered", "cancelled"
+  status: "preparing",
   items: [
     {
       id: 1,
@@ -46,8 +45,8 @@ const ORDER = {
   subtotal: 34.97,
   tax: 2.87,
   total: 40.83,
-  orderTime: new Date(Date.now() - 15 * 60000).toISOString(), // 15 minutes ago
-  preparationTime: 20, // minutes
+  orderTime: new Date(Date.now() - 15 * 60000).toISOString(),
+  preparationTime: 20,
   canBeCancelled: true,
   restaurant: {
     name: "FoodieNexus Kitchen",
@@ -68,21 +67,17 @@ const OrderTracking = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   
-  // Fetch order data
   useEffect(() => {
     const fetchOrder = async () => {
       setIsLoading(true);
       
       try {
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 500));
         
-        // In a real app, you'd fetch the order by ID
         setOrder(ORDER);
         
-        // Calculate time remaining for cancellation (10 minutes from order time)
         const orderTime = new Date(ORDER.orderTime).getTime();
-        const cancelCutoff = orderTime + 10 * 60 * 1000; // 10 minutes in milliseconds
+        const cancelCutoff = orderTime + 10 * 60 * 1000;
         const now = Date.now();
         
         if (now < cancelCutoff) {
@@ -106,7 +101,6 @@ const OrderTracking = () => {
     }
   }, [id, toast]);
   
-  // Countdown timer for cancellation window
   useEffect(() => {
     if (timeRemaining === null || timeRemaining <= 0) return;
     
@@ -125,10 +119,8 @@ const OrderTracking = () => {
   
   const handleCancelOrder = async () => {
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Update the order status
       setOrder({ ...order, status: "cancelled" });
       
       toast({
@@ -144,7 +136,6 @@ const OrderTracking = () => {
     }
   };
   
-  // Loading skeleton
   if (isLoading || !order) {
     return (
       <Layout>
@@ -172,7 +163,6 @@ const OrderTracking = () => {
     );
   }
   
-  // Define steps based on order status
   const steps = [
     { 
       id: "placed", 
@@ -223,7 +213,6 @@ const OrderTracking = () => {
             </span>
           </div>
           
-          {/* Order Status Card */}
           <div className="glass-card p-6 md:p-8 rounded-xl mb-8 animate-scale-in">
             <h1 className="text-2xl font-bold mb-2">
               {order.status === "cancelled" ? "Order Cancelled" : "Track Your Order"}
@@ -243,19 +232,16 @@ const OrderTracking = () => {
             
             {order.status !== "cancelled" && (
               <>
-                {/* Progress Steps */}
                 <div className="mb-8">
                   <div className="flex items-center justify-between">
                     {steps.map((step, index) => (
                       <div key={step.id} className="flex flex-col items-center relative">
-                        {/* Connecting line */}
                         {index < steps.length - 1 && (
                           <div className={`absolute h-0.5 w-full right-0 top-5 transform translate-x-1/2 ${
                             step.completed ? "bg-primary" : "bg-secondary"
                           }`}></div>
                         )}
                         
-                        {/* Step icon */}
                         <div className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full ${
                           step.completed || step.current
                             ? "bg-primary text-primary-foreground"
@@ -264,7 +250,6 @@ const OrderTracking = () => {
                           <step.icon className="h-5 w-5" />
                         </div>
                         
-                        {/* Step details */}
                         <div className="mt-2 text-center">
                           <p className={`text-xs font-medium ${
                             step.current ? "text-primary" : ""
@@ -280,7 +265,6 @@ const OrderTracking = () => {
                   </div>
                 </div>
                 
-                {/* Cancellation button */}
                 {timeRemaining !== null && timeRemaining > 0 && order.canBeCancelled && order.status !== "cancelled" && (
                   <div className="border border-border rounded-lg p-4 bg-secondary/50 mb-6">
                     <div className="flex justify-between items-center">
@@ -301,7 +285,6 @@ const OrderTracking = () => {
                   </div>
                 )}
                 
-                {/* Delivery Information */}
                 {order.status === "delivering" && (
                   <div className="border border-border rounded-lg p-4 bg-secondary/50 mt-6">
                     <h3 className="font-medium mb-3">Delivery Information</h3>
@@ -331,11 +314,9 @@ const OrderTracking = () => {
             )}
           </div>
           
-          {/* Order Details */}
           <div className="glass-card p-6 md:p-8 rounded-xl animate-scale-in">
             <h2 className="text-xl font-bold mb-4">Order Details</h2>
             
-            {/* Delivery Info */}
             <div className="flex items-start space-x-3 mb-6 pb-6 border-b border-border">
               <div className="bg-secondary p-2 rounded-full">
                 <MapPin className="h-5 w-5 text-primary" />
@@ -346,7 +327,6 @@ const OrderTracking = () => {
               </div>
             </div>
             
-            {/* Restaurant Info */}
             <div className="flex items-start space-x-3 mb-6 pb-6 border-b border-border">
               <div className="bg-secondary p-2 rounded-full">
                 <Utensils className="h-5 w-5 text-primary" />
@@ -363,7 +343,6 @@ const OrderTracking = () => {
               </div>
             </div>
             
-            {/* Order Items */}
             <h3 className="font-medium mb-4">Items</h3>
             <div className="space-y-4 mb-6">
               {order.items.map((item: any) => (
@@ -388,7 +367,6 @@ const OrderTracking = () => {
               ))}
             </div>
             
-            {/* Order Summary */}
             <div className="border-t border-border pt-4">
               <div className="flex justify-between py-2">
                 <span className="text-muted-foreground">Subtotal</span>
