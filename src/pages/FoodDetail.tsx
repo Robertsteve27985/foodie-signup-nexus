@@ -15,7 +15,7 @@ import {
   Info,
   Utensils
 } from "lucide-react";
-import { addToCart } from "@/utils/cartUtils";
+import { addToCart as addItemToCart } from "@/utils/cartUtils";
 
 // Sample food data
 const FOODS = [
@@ -203,7 +203,7 @@ const FoodDetail = () => {
     }
   };
   
-  const addToCart = () => {
+  const handleAddToCart = () => {
     if (!food) return;
     
     // Add the item to cart
@@ -216,7 +216,7 @@ const FoodDetail = () => {
     };
     
     // Call the addToCart function from cartUtils
-    addToCart(cartItem);
+    addItemToCart(cartItem);
     
     // Show success toast
     toast({
@@ -368,7 +368,7 @@ const FoodDetail = () => {
                 </div>
                 
                 <Button
-                  onClick={addToCart}
+                  onClick={handleAddToCart}
                   className="w-full btn-primary mt-4"
                 >
                   <ShoppingCart className="h-5 w-5 mr-2" />
