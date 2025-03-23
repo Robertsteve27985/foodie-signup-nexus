@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import FoodMenu from "./pages/FoodMenu";
 import FoodDetail from "./pages/FoodDetail";
 import OrderTracking from "./pages/OrderTracking";
+import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 
 // Create a new QueryClient instance
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="/menu" element={<FoodMenu />} />
               <Route path="/food/:id" element={<FoodDetail />} />
               <Route path="/order/:id" element={<OrderTracking />} />
+              <Route path="/cart" element={<Cart />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

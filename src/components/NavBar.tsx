@@ -11,17 +11,40 @@ import {
   LogOut
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getCartItemCount } from "@/utils/cartUtils";
 
 const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   // Check if user is logged in
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     setIsLoggedIn(!!token);
+  }, []);
+
+  // Update cart count
+  useEffect(() => {
+    const updateCartCount = () => {
+      setCartCount(getCartItemCount());
+    };
+
+    // Update on mount
+    updateCartCount();
+
+    // Listen for storage events to update cart count
+    window.addEventListener('storage', updateCartCount);
+    
+    // Custom event for cart updates within the same window
+    window.addEventListener('cartUpdated', updateCartCount);
+
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
   }, []);
 
   // Handle scroll effect
@@ -75,9 +98,11 @@ const NavBar = () => {
                 <Link to="/cart">
                   <Button variant="ghost" size="icon" className="relative">
                     <ShoppingBag className="h-5 w-5" />
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                      0
-                    </span>
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                        {cartCount > 99 ? '99+' : cartCount}
+                      </span>
+                    )}
                   </Button>
                 </Link>
                 <Link to="/profile">
@@ -132,7 +157,7 @@ const NavBar = () => {
                   <Link to="/cart" onClick={toggleMenu}>
                     <Button variant="outline" className="w-40 flex items-center justify-center space-x-2">
                       <ShoppingBag className="h-5 w-5" />
-                      <span>Cart</span>
+                      <span>Cart {cartCount > 0 && `(${cartCount})`}</span>
                     </Button>
                   </Link>
                   <Link to="/profile" onClick={toggleMenu}>

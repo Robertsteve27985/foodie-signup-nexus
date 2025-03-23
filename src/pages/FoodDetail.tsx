@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +15,7 @@ import {
   Info,
   Utensils
 } from "lucide-react";
+import { addToCart } from "@/utils/cartUtils";
 
 // Sample food data
 const FOODS = [
@@ -204,11 +204,28 @@ const FoodDetail = () => {
   };
   
   const addToCart = () => {
-    // In a real app, this would add the item to a cart in state or localStorage
+    if (!food) return;
+    
+    // Add the item to cart
+    const cartItem = {
+      id: food.id,
+      name: food.name,
+      price: food.price,
+      quantity: quantity,
+      image: food.image
+    };
+    
+    // Call the addToCart function from cartUtils
+    addToCart(cartItem);
+    
+    // Show success toast
     toast({
       title: "Added to cart",
       description: `${quantity}x ${food.name} added to your cart`,
     });
+    
+    // Dispatch custom event to update cart count in NavBar
+    window.dispatchEvent(new Event('cartUpdated'));
   };
   
   const toggleFavorite = () => {
