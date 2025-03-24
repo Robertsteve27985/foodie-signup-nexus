@@ -28,6 +28,9 @@ export const addToCart = (item: CartItem): void => {
   }
   
   localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // Dispatch a custom event to notify other components
+  window.dispatchEvent(new Event('cartUpdated'));
 };
 
 // Remove item from cart
@@ -35,6 +38,9 @@ export const removeFromCart = (itemId: number): void => {
   let cart = getCart();
   cart = cart.filter(item => item.id !== itemId);
   localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // Dispatch a custom event to notify other components
+  window.dispatchEvent(new Event('cartUpdated'));
 };
 
 // Update item quantity
@@ -45,6 +51,9 @@ export const updateCartItemQuantity = (itemId: number, quantity: number): void =
   if (item) {
     item.quantity = quantity;
     localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Dispatch a custom event to notify other components
+    window.dispatchEvent(new Event('cartUpdated'));
   }
 };
 
